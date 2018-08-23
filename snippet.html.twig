@@ -1,0 +1,51 @@
+{% if (app.environment == "dev") or (app.environment == "devstage") %}
+<script>
+  var parsedData = JSON.parse('{{ style.images|json_encode|raw }}');
+
+  console.log(parsedData);
+
+  /*
+    style.images
+      jpg
+        colorized
+          01G3 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+          03P0 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+          0040 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+        view
+          (two-digit numbers from 01, nonconsecutive)
+            (different resolutions)
+              (URLs for images, other info)
+      png
+        colorized
+          01G3 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+          03P0 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+          0040 -> (two-digit numbers from 01, nonconsecutive) -> (different resolutions)
+        view
+          (two-digit numbers from 01, nonconsecutive, same keys as jpg key)
+            (different resolutions)
+              (URLs for images, other info)
+  */
+
+
+  var arr = Object.keys(parsedData.jpg.colorized).map( key => parsedData.jpg.colorized[key])
+  console.log(arr);
+
+  var allHREFs = [];
+
+  function outputHREFinObj(obj){
+    for (var key in obj){
+      // console.log(obj[key]);
+      if (typeof obj[key] === 'string'){
+        if (obj[key].includes('https://')) {
+          allHREFs.push(obj[key]);
+        }
+      } else {
+        outputHREFinObj(obj[key]);
+      }
+    }
+  }
+
+  outputHREFinObj(arr);
+
+</script>
+{% endif %}
